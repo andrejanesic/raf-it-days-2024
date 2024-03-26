@@ -3,6 +3,7 @@ from llama_index.core.memory import ChatMemoryBuffer
 from llama_index.llms.openai import OpenAI
 from dotenv import load_dotenv
 import gradio as gr
+import os
 
 load_dotenv()
 
@@ -47,13 +48,18 @@ def chatbot(message, _):
 
 demo = gr.ChatInterface(
     fn=chatbot,
-    textbox=gr.Textbox(placeholder="Pitaj me sve o našim biciklima", container=False, scale=7),
+    textbox=gr.Textbox(
+        placeholder="Pitaj me sve o našim biciklima", container=False, scale=7
+    ),
     title="MojBajs - Prodaja",
     description="Pomoć u odabiru bicikla i biciklističke opreme.",
-    theme="soft",
+    # theme=gr.themes.Soft(),
+    # theme=gr.themes.Monochrome(),
+    theme=gr.themes.Glass(),
     clear_btn=None,
     undo_btn=None,
     retry_btn=None,
 ).queue(default_concurrency_limit=5)
 
-demo.launch()
+do_share = os.getenv("GRADIO_SHARE", "False").lower().strip() == "true"
+demo.launch(share=do_share)
